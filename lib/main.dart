@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'components/first_image.dart';
+import 'pages/list_laporan.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(const MaterialApp(home: MyApp()));
 
 class AnimatedLogo extends AnimatedWidget {
   // Constructor
@@ -40,7 +41,18 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
     super.initState();
     controller = AnimationController(
         duration: const Duration(milliseconds: 900), vsync: this);
-    animation = Tween<double>(begin: 0, end: 500).animate(controller);
+    animation = Tween<double>(begin: 0, end: 500).animate(controller)
+      ..addStatusListener((status) => {
+            if (status == AnimationStatus.completed)
+              {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ListLaporan()),
+                )
+              }
+            else if (status == AnimationStatus.dismissed)
+              {controller.forward()}
+          });
     controller.forward();
   }
 
