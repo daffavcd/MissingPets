@@ -7,23 +7,19 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 import 'dart:io';
 
-const List<String> list = <String>['Kucing', 'Anjing', 'Burung', 'Lainnya'];
-
-class LaporkanKehilangan extends StatefulWidget {
-  const LaporkanKehilangan({super.key});
+class LaporkanPenemuan extends StatefulWidget {
+  const LaporkanPenemuan({super.key});
 
   @override
-  State<LaporkanKehilangan> createState() => _LaporkanKehilanganState();
+  State<LaporkanPenemuan> createState() => _LaporkanPenemuanState();
 }
 
-class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
-  final namaHewanController = TextEditingController();
-  final tanggalHilangController = TextEditingController();
-  final waktuHilangController = TextEditingController();
+class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
+  final lokasiTerakhirController = TextEditingController();
+  final tanggalDilihatController = TextEditingController();
+  final waktuDilihatController = TextEditingController();
   final gambarController = TextEditingController();
   final keteranganController = TextEditingController();
-
-  String dropdownValue = list.first;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +31,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
             height: 100,
           ),
           Text(
-            "Laporkan Kehilangan",
+            "Laporkan Penemuan",
             style: GoogleFonts.poppins(
               textStyle:
                   const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
@@ -52,12 +48,12 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
               ),
               enableSuggestions: false,
               autocorrect: false,
-              controller: namaHewanController,
+              controller: lokasiTerakhirController,
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Nama Hewan',
+                hintText: 'Lokasi Terakhir Dilihat',
                 filled: true,
-                labelText: 'Nama Hewan',
+                labelText: 'Lokasi Terakhir Dilihat',
               ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
@@ -69,51 +65,17 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
-            child: ButtonTheme(
-                alignedDropdown: true,
-                child: DropdownButtonFormField<String>(
-                  style: GoogleFonts.poppins(
-                    textStyle: const TextStyle(
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black87,
-                      fontSize: 16,
-                    ),
-                  ),
-                  hint: const Text('Jenis Hewan'),
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    labelText: 'Select City',
-                  ),
-                  value: dropdownValue,
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  onChanged: (String? value) {
-                    // This is called when the user selects an item.
-                    setState(() {
-                      dropdownValue = value!;
-                    });
-                  },
-                  items: list.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
             child: TextFormField(
               style: GoogleFonts.poppins(
                 textStyle: const TextStyle(fontWeight: FontWeight.normal),
               ),
               readOnly: true,
-              controller: tanggalHilangController,
+              controller: tanggalDilihatController,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                hintText: 'Pilih Tanggal Kehilangan',
+                hintText: 'Pilih Tanggal Dilihat',
                 filled: true,
-                labelText: 'Pilih Tanggal Kehilangan',
+                labelText: 'Pilih Tanggal Dilihat',
                 suffixIcon: IconButton(
                   onPressed: () => {},
                   icon: const Icon(Icons.calendar_today),
@@ -136,7 +98,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
                   //you can implement different kind of Date Format here according to your requirement
 
                   setState(() {
-                    tanggalHilangController.text =
+                    tanggalDilihatController.text =
                         formattedDate; //set output date to TextField value.
                   });
                 } else {
@@ -152,12 +114,12 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
                 textStyle: const TextStyle(fontWeight: FontWeight.normal),
               ),
               readOnly: true,
-              controller: waktuHilangController,
+              controller: waktuDilihatController,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                hintText: 'Pilih Waktu Kehilangan',
+                hintText: 'Pilih Waktu Dilihat',
                 filled: true,
-                labelText: 'Pilih Waktu Kehilangan',
+                labelText: 'Pilih Waktu Dilihat',
                 suffixIcon: IconButton(
                   onPressed: () => {},
                   icon: const Icon(Icons.access_time),
@@ -177,7 +139,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
                   String formatedTime = pickedTime.format(context);
 
                   setState(() {
-                    waktuHilangController.text =
+                    waktuDilihatController.text =
                         formatedTime; //set output date to TextField value.
                   });
                 } else {
@@ -196,9 +158,9 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
               controller: gambarController,
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                hintText: 'Pilih Gambar Hewan',
+                hintText: 'Pilih Gambar Penemuan',
                 filled: true,
-                labelText: 'Pilih Gambar Hewan',
+                labelText: 'Pilih Gambar Penemuan',
                 suffixIcon: IconButton(
                   onPressed: () => {},
                   icon: const Icon(Icons.image),
@@ -246,7 +208,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
                 minimumSize: const Size.fromHeight(50), // NEW
               ),
               onPressed: () {
-                if (namaHewanController.text == 'daffavcd') {
+                if (lokasiTerakhirController.text == 'daffavcd') {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('You are Autorized.')),
                   );
