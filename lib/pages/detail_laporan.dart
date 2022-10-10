@@ -113,6 +113,36 @@ class _DetailLaporanState extends State<DetailLaporan> {
                               children: [
                                 const WidgetSpan(
                                   child: Icon(
+                                    Icons.pin_drop_outlined,
+                                    size: 20,
+                                    color: Colors.black87,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: " Malang, Indonesia",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: const TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 17,
+                                      color: Colors.black87,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 5),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: RichText(
+                            text: TextSpan(
+                              children: [
+                                const WidgetSpan(
+                                  child: Icon(
                                     Icons.pets,
                                     size: 20,
                                     color: Colors.black87,
@@ -182,6 +212,41 @@ class _DetailLaporanState extends State<DetailLaporan> {
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 20),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            child: Text(
+                              'List Laporan Penemuan',
+                              style: GoogleFonts.poppins(
+                                textStyle: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // IF ELSE IS THERE IS PENEMUAN?
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 0),
+                        child: Container(
+                          child: Text(
+                            'Sejauh ini belum ada laporan.',
+                            style: GoogleFonts.poppins(
+                              textStyle: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // IF ELSE IS USER = ID USER
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
                             horizontal: 10, vertical: 30.0),
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -238,7 +303,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                     Navigator.pop(context, 'OK');
                                   },
                                   child: Text(
-                                    'OK',
+                                    'Iya',
                                     style: GoogleFonts.poppins(
                                       textStyle: const TextStyle(
                                         fontWeight: FontWeight.normal,
@@ -255,6 +320,82 @@ class _DetailLaporanState extends State<DetailLaporan> {
                           child: const Text('Hewanku Telah Ditemukan!'),
                         ),
                       ),
+                      // Padding(
+                      //   padding: const EdgeInsets.symmetric(
+                      //       horizontal: 10, vertical: 30.0),
+                      //   child: ElevatedButton(
+                      //     style: ElevatedButton.styleFrom(
+                      //       backgroundColor:
+                      //           const Color.fromRGBO(246, 157, 123, 1.0),
+                      //       minimumSize: const Size.fromHeight(50), // NEW
+                      //     ),
+                      //     onPressed: () => showDialog<String>(
+                      //       context: context,
+                      //       builder: (BuildContext context) => AlertDialog(
+                      //         title: Text(
+                      //           'Konfirmasi Perubahan?',
+                      //           style: GoogleFonts.poppins(
+                      //             textStyle: const TextStyle(
+                      //               fontWeight: FontWeight.w600,
+                      //               fontSize: 22,
+                      //               color: Colors.black87,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         content: Text(
+                      //           'Apakah hewan anda benar-benar telah ditemukan?',
+                      //           style: GoogleFonts.poppins(
+                      //             textStyle: const TextStyle(
+                      //               fontWeight: FontWeight.normal,
+                      //               fontSize: 18,
+                      //               color: Colors.black87,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         actions: <Widget>[
+                      //           TextButton(
+                      //             onPressed: () =>
+                      //                 Navigator.pop(context, 'Cancel'),
+                      //             child: Text(
+                      //               'Cancel',
+                      //               style: GoogleFonts.poppins(
+                      //                 textStyle: const TextStyle(
+                      //                   fontWeight: FontWeight.normal,
+                      //                   fontSize: 15,
+                      //                   color: Colors.black87,
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           TextButton(
+                      //             onPressed: () {
+                      //               ScaffoldMessenger.of(context).showSnackBar(
+                      //                 const SnackBar(
+                      //                   content:
+                      //                       Text('Status berhasil dirubah.'),
+                      //                 ),
+                      //               );
+                      //               Navigator.pop(context, 'OK');
+                      //             },
+                      //             child: Text(
+                      //               'OK',
+                      //               style: GoogleFonts.poppins(
+                      //                 textStyle: const TextStyle(
+                      //                   fontWeight: FontWeight.normal,
+                      //                   fontSize: 15,
+                      //                   color:
+                      //                       Color.fromRGBO(246, 157, 123, 1.0),
+                      //                 ),
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     child: const Text('Buat Laporan Penemuan!'),
+                      //   ),
+                      // ),
+                      // IF ELSE IS USER = ID USER
                     ],
                   ),
                 ),

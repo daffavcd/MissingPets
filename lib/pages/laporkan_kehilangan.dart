@@ -20,6 +20,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
   final namaHewanController = TextEditingController();
   final tanggalHilangController = TextEditingController();
   final waktuHilangController = TextEditingController();
+  final lokasiTerakhirController = TextEditingController();
   final gambarController = TextEditingController();
   final keteranganController = TextEditingController();
 
@@ -70,6 +71,31 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
+            child: TextFormField(
+              style: GoogleFonts.poppins(
+                textStyle: const TextStyle(fontWeight: FontWeight.normal),
+              ),
+              controller: lokasiTerakhirController,
+              decoration: InputDecoration(
+                border: const OutlineInputBorder(),
+                hintText: 'Lokasi Terakhir Dilihat',
+                filled: true,
+                labelText: 'Lokasi Terakhir Dilihat',
+                suffixIcon: IconButton(
+                  onPressed: () => {},
+                  icon: const Icon(Icons.pin_drop_outlined),
+                ),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter some text';
+                }
+                return null;
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
             child: ButtonTheme(
                 alignedDropdown: true,
                 child: DropdownButtonFormField<String>(
@@ -84,7 +110,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     filled: true,
-                    labelText: 'Select City',
+                    labelText: 'Pilih Jenis Hewan',
                   ),
                   value: dropdownValue,
                   icon: const Icon(Icons.keyboard_arrow_down),

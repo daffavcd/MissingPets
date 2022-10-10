@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const DetailLaporan(),
+                    builder: (context) => const LaporkanKehilangan(),
                   ),
                 )
               }
