@@ -47,6 +47,7 @@ class _MasukState extends State<Masuk> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: Column(
         children: <Widget>[

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.kucingku_hilang">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="kucingku_hilang"
         android:name="${applicationName}"

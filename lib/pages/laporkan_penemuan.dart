@@ -24,6 +24,7 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: Column(
         children: <Widget>[

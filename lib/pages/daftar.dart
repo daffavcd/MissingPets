@@ -47,6 +47,7 @@ class _DaftarState extends State<Daftar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: Column(
         children: <Widget>[

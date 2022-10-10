@@ -51,7 +51,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const Daftar()),
+                  MaterialPageRoute(builder: (context) => const ListLaporan()),
                 )
               }
             else if (status == AnimationStatus.dismissed)
