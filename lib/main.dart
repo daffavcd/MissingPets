@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'components/first_image.dart';
 import 'pages/list_laporan.dart';
+import 'pages/detail_laporan.dart';
 import 'pages/history_laporan.dart';
 import 'pages/laporkan_kehilangan.dart';
 import 'pages/laporkan_penemuan.dart';
@@ -53,7 +54,8 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const HistoryLaporan()),
+                    builder: (context) => const DetailLaporan(),
+                  ),
                 )
               }
             else if (status == AnimationStatus.dismissed)
