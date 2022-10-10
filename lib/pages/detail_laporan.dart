@@ -119,7 +119,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: " Malang, Indonesia",
+                                  text: " Disebelah ayunan, Malang",
                                   style: GoogleFonts.poppins(
                                     textStyle: const TextStyle(
                                       fontWeight: FontWeight.w500,
@@ -210,19 +210,31 @@ class _DetailLaporanState extends State<DetailLaporan> {
                           ),
                         ),
                       ),
+                      const Padding(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                        child: Divider(),
+                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 20),
+                            horizontal: 10, vertical: 5),
                         child: Align(
-                          alignment: Alignment.centerLeft,
+                          alignment: Alignment.center,
                           child: Container(
-                            child: Text(
-                              'List Laporan Penemuan',
-                              style: GoogleFonts.poppins(
-                                textStyle: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 18,
-                                ),
+                            child: RichText(
+                              text: TextSpan(
+                                children: [
+                                  TextSpan(
+                                    text: "~ List Laporan Penemuan ~",
+                                    style: GoogleFonts.poppins(
+                                      textStyle: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
@@ -234,7 +246,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
                             horizontal: 10, vertical: 0),
                         child: Container(
                           child: Text(
-                            'Sejauh ini belum ada laporan.',
+                            'Sejauh ini belum ada penemuan.',
                             style: GoogleFonts.poppins(
                               textStyle: const TextStyle(
                                 fontWeight: FontWeight.normal,
