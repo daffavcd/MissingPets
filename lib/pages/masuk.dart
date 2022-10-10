@@ -7,6 +7,8 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:kucingku_hilang/pages/daftar.dart';
+
 class Masuk extends StatefulWidget {
   const Masuk({super.key});
 
@@ -119,6 +121,31 @@ class _MasukState extends State<Masuk> {
                         }
                         return null;
                       },
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Daftar()),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 3),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Belum punya akun? Daftar',
+                          style: GoogleFonts.poppins(
+                            textStyle: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 15,
+                              color: Colors.blue[500],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Padding(

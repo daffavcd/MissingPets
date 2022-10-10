@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:kucingku_hilang/pages/detail_laporan.dart';
 
 class ListLaporan extends StatefulWidget {
   const ListLaporan({super.key});
@@ -90,7 +93,13 @@ class _ListLaporanState extends State<ListLaporan> {
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
               children: <Widget>[
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DetailLaporan()),
+                    );
+                  },
                   child: Card(
                     margin: EdgeInsets.only(bottom: 25),
                     elevation: 8,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import './detail_laporan.dart';
 
 class HistoryLaporan extends StatefulWidget {
   const HistoryLaporan({super.key});
@@ -38,7 +39,13 @@ class _HistoryLaporanState extends State<HistoryLaporan> {
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
               children: <Widget>[
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const DetailLaporan()),
+                    );
+                  },
                   child: Card(
                     margin: EdgeInsets.only(bottom: 25),
                     elevation: 8,
