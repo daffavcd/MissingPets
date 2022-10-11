@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import './detail_laporan.dart';
 
 class HistoryLaporan extends StatefulWidget {
-  const HistoryLaporan({super.key});
+  const HistoryLaporan(this.onItemTapped, {super.key});
+  final void Function(int index, bool choose, bool choose2) onItemTapped;
 
   @override
   State<HistoryLaporan> createState() => _HistoryLaporanState();
@@ -40,11 +41,7 @@ class _HistoryLaporanState extends State<HistoryLaporan> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DetailLaporan()),
-                    );
+                    widget.onItemTapped(1, true, false);
                   },
                   child: Card(
                     margin: EdgeInsets.only(bottom: 25),

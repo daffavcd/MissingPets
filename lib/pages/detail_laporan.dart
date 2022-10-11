@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:kucingku_hilang/pages/laporkan_penemuan.dart';
 
 class DetailLaporan extends StatefulWidget {
-  const DetailLaporan({super.key});
+  const DetailLaporan(this.onItemTapped, {super.key});
+  final void Function(int index, bool choose, bool choose2) onItemTapped;
 
   @override
   State<DetailLaporan> createState() => _DetailLaporanState();
@@ -307,6 +308,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                 ),
                                 TextButton(
                                   onPressed: () {
+                                    widget.onItemTapped(1, false, false);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content:
@@ -343,12 +345,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
                             minimumSize: const Size.fromHeight(50), // NEW
                           ),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LaporkanPenemuan(),
-                              ),
-                            );
+                            widget.onItemTapped(0, true, true);
                           },
                           child: const Text('Buat Laporan Penemuan!'),
                         ),

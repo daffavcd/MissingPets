@@ -5,7 +5,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:kucingku_hilang/pages/detail_laporan.dart';
 
 class ListLaporan extends StatefulWidget {
-  const ListLaporan({super.key});
+  const ListLaporan(this.onItemTapped, {super.key});
+  final void Function(int index, bool choose, bool choose2) onItemTapped;
 
   @override
   State<ListLaporan> createState() => _ListLaporanState();
@@ -94,11 +95,7 @@ class _ListLaporanState extends State<ListLaporan> {
               children: <Widget>[
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const DetailLaporan()),
-                    );
+                    widget.onItemTapped(0, true, false);
                   },
                   child: Card(
                     margin: EdgeInsets.only(bottom: 25),

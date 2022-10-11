@@ -1,7 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:kucingku_hilang/pages/daftar.dart';
 import 'package:kucingku_hilang/pages/detail_laporan.dart';
 import 'package:kucingku_hilang/pages/history_laporan.dart';
 import 'package:kucingku_hilang/pages/laporkan_kehilangan.dart';
+import 'package:kucingku_hilang/pages/laporkan_penemuan.dart';
 import 'package:kucingku_hilang/pages/list_laporan.dart';
 import 'package:kucingku_hilang/pages/masuk.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,18 +19,37 @@ class FirstPage extends StatefulWidget {
 
 class _FirstPageState extends State<FirstPage> {
   int _selectedIndex = 0;
+  bool _isChild = false;
+  bool _isChildChild = false;
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    ListLaporan(),
-    HistoryLaporan(),
-    LaporkanKehilangan(),
-    Masuk(),
-  ];
-
-  void _onItemTapped(int index) {
+  void onItemTapped(int index, bool choose, bool choose2) {
     setState(() {
       _selectedIndex = index;
+      _isChild = choose;
+      _isChildChild = choose2;
     });
+  }
+
+  Widget childBody() {
+    if (_selectedIndex == 0 && !_isChild && !_isChildChild) {
+      return ListLaporan(onItemTapped);
+    } else if (_selectedIndex == 0 && _isChild && !_isChildChild) {
+      return DetailLaporan(onItemTapped);
+    } else if (_selectedIndex == 0 && _isChild && _isChildChild) {
+      return const LaporkanPenemuan();
+    } else if (_selectedIndex == 1 && !_isChild && !_isChildChild) {
+      return HistoryLaporan(onItemTapped);
+    } else if (_selectedIndex == 1 && _isChild && !_isChildChild) {
+      return DetailLaporan(onItemTapped);
+    } else if (_selectedIndex == 2 && !_isChild && !_isChildChild) {
+      return const LaporkanKehilangan();
+    } else if (_selectedIndex == 3 && !_isChild && !_isChildChild) {
+      return Masuk(onItemTapped);
+    } else if (_selectedIndex == 3 && _isChild && !_isChildChild) {
+      return const Daftar();
+    }
+
+    return const Text('Failed rendering.');
   }
 
   @override
@@ -35,7 +58,7 @@ class _FirstPageState extends State<FirstPage> {
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+        child: childBody(),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -70,7 +93,9 @@ class _FirstPageState extends State<FirstPage> {
         iconSize: 26,
         unselectedItemColor: const Color.fromRGBO(248, 217, 201, 1.0),
         selectedItemColor: const Color.fromRGBO(252, 252, 250, 1.0),
-        onTap: _onItemTapped,
+        onTap: (int index) {
+          onItemTapped(index, false, false);
+        },
       ),
     );
   }
