@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "183026198702",
+    "project_id": "kucingku-hilang",
+    "storage_bucket": "kucingku-hilang.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183026198702:android:ef2b8d9ee4457d176b253f",
+        "android_client_info": {
+          "package_name": "com.example.kucingku_hilang"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "183026198702-cn5295eg32qnios7lp5nkjlkdt7pltpb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBkCawwuUMaTgJ3pT_y2dj-vZnoZY8D8Go"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "183026198702-cn5295eg32qnios7lp5nkjlkdt7pltpb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "183026198702-fqrga09p6ttgn7r8lpiji80fs8ktjoqh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.kucingkuHilang"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,8 +1,18 @@
 import 'package:flutter/material.dart';
 import 'components/first_image.dart';
 import 'pages/first_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() => runApp(const MaterialApp(home: MyApp()));
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(const MaterialApp(home: MyApp()));
+}
 
 class AnimatedLogo extends AnimatedWidget {
   // Constructor
