@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:kucingku_hilang/pages/daftar.dart';
 
@@ -19,7 +20,10 @@ class Masuk extends StatefulWidget {
 
 class _MasukState extends State<Masuk> {
   final _formKey = GlobalKey<FormState>();
-  final _isuser = false;
+  var _isuser = false;
+  var _emailUser;
+  var myUser;
+  var pagesName = 'Masuk';
 
   final namaController = TextEditingController();
   final asalKotaController = TextEditingController();
@@ -49,6 +53,22 @@ class _MasukState extends State<Masuk> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    FirebaseAuth.instance.authStateChanges().listen((firebaseUser) {
+      if (firebaseUser != null) {
+        setState(() {
+          myUser = firebaseUser;
+          _emailUser = firebaseUser.email;
+          _isuser = true;
+        });
+      }
+      print(firebaseUser);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -68,7 +88,7 @@ class _MasukState extends State<Masuk> {
                   ),
                 )
               : Text(
-                  "Masuk",
+                  pagesName,
                   style: GoogleFonts.poppins(
                     textStyle: const TextStyle(
                         fontWeight: FontWeight.bold, fontSize: 30),
@@ -79,28 +99,58 @@ class _MasukState extends State<Masuk> {
           ),
           // IF ELSE IS AUTHENTICATED
           _isuser
-              ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                            text: "Selamat Datang, daffavcd@gmail.com",
-                            style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                                fontWeight: FontWeight.w500,
-                                fontSize: 18,
-                                color: Colors.black87,
+              ? Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 5),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                // text: 'Selamat Datang, ',
+                                text: 'Selamat Datang, $_emailUser',
+                                style: GoogleFonts.poppins(
+                                  textStyle: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 18,
+                                    color: Colors.black87,
+                                  ),
+                                ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 16.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color.fromARGB(255, 255, 102, 41),
+                          minimumSize: const Size.fromHeight(50), // NEW
+                        ),
+                        onPressed: () async {
+                          await FirebaseAuth.instance.signOut();
+                          if (!mounted) return;
+
+                          setState(() {
+                            _isuser = false;
+                            _emailUser = null;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Signing Out Success')),
+                          );
+                        },
+                        child: const Text('Logout'),
+                      ),
+                    ),
+                  ],
                 )
               : Form(
                   key: _formKey,
@@ -159,28 +209,33 @@ class _MasukState extends State<Masuk> {
                           },
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          widget.onItemTapped(3, true, false);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 15, vertical: 3),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              'Belum punya akun? Daftar',
-                              style: GoogleFonts.poppins(
-                                textStyle: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 15,
-                                  color: Colors.blue[500],
+                      if (pagesName == 'Masuk')
+                        GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              pagesName = 'Daftar';
+                            });
+                            emailController.text = '';
+                            passwordController.text = '';
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15, vertical: 3),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                'Belum punya akun? Daftar',
+                                style: GoogleFonts.poppins(
+                                  textStyle: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 15,
+                                    color: Colors.blue[500],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
                       Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 15, vertical: 16.0),
@@ -190,14 +245,79 @@ class _MasukState extends State<Masuk> {
                                 const Color.fromRGBO(246, 157, 123, 1.0),
                             minimumSize: const Size.fromHeight(50), // NEW
                           ),
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState!.validate()) {
-                              // If the form is valid, display a snackbar. In the real world,
-                              // you'd often call a server or save the information in a database.
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Processing Data')),
-                              );
+                              if (pagesName == 'Masuk') {
+                                try {
+                                  UserCredential userCredential =
+                                      await FirebaseAuth
+                                          .instance
+                                          .signInWithEmailAndPassword(
+                                              email: emailController.text,
+                                              password:
+                                                  passwordController.text);
+
+                                  log(userCredential.user.toString());
+                                  setState(() {
+                                    myUser = userCredential.user;
+                                    _emailUser = emailController.text;
+                                    _isuser = true;
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Login Success')),
+                                  );
+                                } on FirebaseAuthException catch (e) {
+                                  if (e.code == 'user-not-found') {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'No user found for that email.')));
+                                  } else if (e.code == 'wrong-password') {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Wrong password provided for that user.')));
+                                  }
+                                }
+                              } else {
+                                try {
+                                  UserCredential userCredential =
+                                      await FirebaseAuth
+                                          .instance
+                                          .createUserWithEmailAndPassword(
+                                              email: emailController.text,
+                                              password:
+                                                  passwordController.text);
+
+                                  log(userCredential.toString());
+
+                                  setState(() {
+                                    myUser = userCredential;
+                                    _emailUser = emailController.text;
+                                    _isuser = true;
+                                  });
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('Register Success')),
+                                  );
+                                } on FirebaseAuthException catch (e) {
+                                  if (e.code == 'weak-password') {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'The password provided is too weak.')));
+                                  } else if (e.code == 'email-already-in-use') {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'The account already exists for that email.')));
+                                  }
+                                } catch (e) {
+                                  print(e);
+                                }
+                              }
                             }
                           },
                           child: const Text('Submit'),

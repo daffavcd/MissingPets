@@ -6,9 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Daftar extends StatefulWidget {
-  const Daftar({super.key});
+  const Daftar(this.onItemTapped, {super.key});
+  final void Function(int index, bool choose, bool choose2) onItemTapped;
 
   @override
   State<Daftar> createState() => _DaftarState();
@@ -68,92 +70,92 @@ class _DaftarState extends State<Daftar> {
               key: _formKey,
               child: Column(
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 11),
-                    child: TextFormField(
-                      style: GoogleFonts.poppins(
-                        textStyle:
-                            const TextStyle(fontWeight: FontWeight.normal),
-                      ),
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      controller: namaController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Nama',
-                        filled: true,
-                        labelText: 'Nama',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 11),
-                    child: TextFormField(
-                      style: GoogleFonts.poppins(
-                        textStyle:
-                            const TextStyle(fontWeight: FontWeight.normal),
-                      ),
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      controller: asalKotaController,
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Asal Kota',
-                        filled: true,
-                        labelText: 'Asal Kota',
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 11),
-                    child: TextFormField(
-                      style: GoogleFonts.poppins(
-                        textStyle:
-                            const TextStyle(fontWeight: FontWeight.normal),
-                      ),
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      controller: noTeleponController,
-                      decoration: InputDecoration(
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Text(
-                            '+62 ',
-                            style: GoogleFonts.poppins(
-                              textStyle: const TextStyle(
-                                  fontWeight: FontWeight.normal, fontSize: 15),
-                            ),
-                          ),
-                        ),
-                        border: OutlineInputBorder(),
-                        hintText: 'No Telepon',
-                        filled: true,
-                        labelText: 'No Telepon',
-                      ),
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(
+                  //       horizontal: 15, vertical: 11),
+                  //   child: TextFormField(
+                  //     style: GoogleFonts.poppins(
+                  //       textStyle:
+                  //           const TextStyle(fontWeight: FontWeight.normal),
+                  //     ),
+                  //     enableSuggestions: false,
+                  //     autocorrect: false,
+                  //     controller: namaController,
+                  //     decoration: const InputDecoration(
+                  //       border: OutlineInputBorder(),
+                  //       hintText: 'Nama',
+                  //       filled: true,
+                  //       labelText: 'Nama',
+                  //     ),
+                  //     validator: (value) {
+                  //       if (value == null || value.isEmpty) {
+                  //         return 'Please enter some text';
+                  //       }
+                  //       return null;
+                  //     },
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(
+                  //       horizontal: 15, vertical: 11),
+                  //   child: TextFormField(
+                  //     style: GoogleFonts.poppins(
+                  //       textStyle:
+                  //           const TextStyle(fontWeight: FontWeight.normal),
+                  //     ),
+                  //     enableSuggestions: false,
+                  //     autocorrect: false,
+                  //     controller: asalKotaController,
+                  //     decoration: const InputDecoration(
+                  //       border: OutlineInputBorder(),
+                  //       hintText: 'Asal Kota',
+                  //       filled: true,
+                  //       labelText: 'Asal Kota',
+                  //     ),
+                  //     validator: (value) {
+                  //       if (value == null || value.isEmpty) {
+                  //         return 'Please enter some text';
+                  //       }
+                  //       return null;
+                  //     },
+                  //   ),
+                  // ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(
+                  //       horizontal: 15, vertical: 11),
+                  //   child: TextFormField(
+                  //     style: GoogleFonts.poppins(
+                  //       textStyle:
+                  //           const TextStyle(fontWeight: FontWeight.normal),
+                  //     ),
+                  //     enableSuggestions: false,
+                  //     autocorrect: false,
+                  //     controller: noTeleponController,
+                  //     decoration: InputDecoration(
+                  //       prefixIcon: Padding(
+                  //         padding: const EdgeInsets.all(15),
+                  //         child: Text(
+                  //           '+62 ',
+                  //           style: GoogleFonts.poppins(
+                  //             textStyle: const TextStyle(
+                  //                 fontWeight: FontWeight.normal, fontSize: 15),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       border: OutlineInputBorder(),
+                  //       hintText: 'No Telepon',
+                  //       filled: true,
+                  //       labelText: 'No Telepon',
+                  //     ),
+                  //     keyboardType: TextInputType.phone,
+                  //     validator: (value) {
+                  //       if (value == null || value.isEmpty) {
+                  //         return 'Please enter some text';
+                  //       }
+                  //       return null;
+                  //     },
+                  //   ),
+                  // ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 15, vertical: 11),
@@ -216,13 +218,41 @@ class _DaftarState extends State<Daftar> {
                             const Color.fromRGBO(246, 157, 123, 1.0),
                         minimumSize: const Size.fromHeight(50), // NEW
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          // If the form is valid, display a snackbar. In the real world,
-                          // you'd often call a server or save the information in a database.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                          );
+                          try {
+                            await FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                                    email: emailController.text,
+                                    password: passwordController.text);
+
+                            if (!mounted) return;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Registration successful')),
+                            );
+
+                            widget.onItemTapped(3, false, false);
+                          } on FirebaseAuthException catch (e) {
+                            if (e.code == 'weak-password') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'The password provided is too weak.')),
+                              );
+                            } else if (e.code == 'email-already-in-use') {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'The account already exists for that email.')),
+                              );
+                            }
+                          } catch (e, stack) {
+                            print(stack);
+                            throw Exception(
+                                "Problem while JSON decoding results. [error=${e.toString()}]");
+                          }
                         }
                       },
                       child: const Text('Submit'),

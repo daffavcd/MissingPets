@@ -46,7 +46,7 @@ class _FirstPageState extends State<FirstPage> {
     } else if (_selectedIndex == 3 && !_isChild && !_isChildChild) {
       return Masuk(onItemTapped);
     } else if (_selectedIndex == 3 && _isChild && !_isChildChild) {
-      return const Daftar();
+      return Daftar(onItemTapped);
     }
 
     return const Text('Failed rendering.');
