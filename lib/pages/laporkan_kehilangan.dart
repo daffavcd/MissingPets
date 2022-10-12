@@ -6,11 +6,16 @@ import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:typed_data';
 
 const List<String> list = <String>['Kucing', 'Anjing', 'Burung', 'Lainnya'];
 
 class LaporkanKehilangan extends StatefulWidget {
-  const LaporkanKehilangan({super.key});
+  const LaporkanKehilangan(this.onItemTapped, {super.key});
+  final void Function(int index, bool choose, bool choose2) onItemTapped;
 
   @override
   State<LaporkanKehilangan> createState() => _LaporkanKehilanganState();
@@ -19,6 +24,7 @@ class LaporkanKehilangan extends StatefulWidget {
 class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
   final _formKey = GlobalKey<FormState>();
 
+  late File file;
   final namaHewanController = TextEditingController();
   final tanggalHilangController = TextEditingController();
   final waktuHilangController = TextEditingController();
@@ -27,6 +33,55 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
   final keteranganController = TextEditingController();
 
   String dropdownValue = list.first;
+
+  CollectionReference lostPets =
+      FirebaseFirestore.instance.collection('lostPets');
+
+  final storageRef = FirebaseStorage.instance.ref();
+
+  Future<void> addLostPet() {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('ymdhs').format(now);
+    final imageFix = '${formattedDate}_${gambarController.text}';
+
+    // UPLOAD TO CLOUD STORAGE
+    uploadToStorage(imageFix);
+    // ----
+    final user = FirebaseAuth.instance.currentUser;
+    var email = 'Tidak Terauthentikasi';
+    if (user != null) {
+      email = user.email.toString();
+    }
+
+    // Call the user's CollectionReference to add a new user
+    return lostPets.add({
+      'namaHewan': namaHewanController.text,
+      'waktuHilang':
+          '${tanggalHilangController.text} at ${waktuHilangController.text}',
+      'lokasiTerakhir': lokasiTerakhirController.text,
+      'gambar': imageFix,
+      'keterangan': keteranganController.text,
+      'userEmail': email
+    }).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Hewan berhasil didaftarkan.')),
+      );
+      widget.onItemTapped(0, false, false);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$error')),
+      );
+    });
+  }
+
+  void uploadToStorage(String imageFix) async {
+    // Upload file
+    try {
+      await FirebaseStorage.instance.ref('petImages/$imageFix').putFile(file);
+    } on FirebaseException catch (e) {
+      log(e.toString());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -257,9 +312,11 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
                                 .pickFiles(type: FileType.image);
 
                             if (result != null) {
-                              PlatformFile file = result.files.first;
+                              file = File(result.files.single.path.toString());
+
                               setState(() {
-                                gambarController.text = file.name;
+                                gambarController.text =
+                                    result.files.single.name;
                               });
 
                               // File file = File(result.files.single.path);
@@ -299,8 +356,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
                           ),
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // If the form is valid, display a snackbar. In the real world,
-                              // you'd often call a server or save the information in a database.
+                              addLostPet();
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
                                     content: Text('Processing Data')),

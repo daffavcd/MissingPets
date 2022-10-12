@@ -42,7 +42,7 @@ class _FirstPageState extends State<FirstPage> {
     } else if (_selectedIndex == 1 && _isChild && !_isChildChild) {
       return DetailLaporan(onItemTapped);
     } else if (_selectedIndex == 2 && !_isChild && !_isChildChild) {
-      return const LaporkanKehilangan();
+      return LaporkanKehilangan(onItemTapped);
     } else if (_selectedIndex == 3 && !_isChild && !_isChildChild) {
       return Masuk(onItemTapped);
     } else if (_selectedIndex == 3 && _isChild && !_isChildChild) {
