@@ -55,17 +55,18 @@ class _MasukState extends State<Masuk> {
   @override
   void initState() {
     super.initState();
+    getCurrentUser();
+  }
 
-    FirebaseAuth.instance.authStateChanges().listen((firebaseUser) {
-      if (firebaseUser != null) {
-        setState(() {
-          myUser = firebaseUser;
-          _emailUser = firebaseUser.email;
-          _isuser = true;
-        });
-      }
-      print(firebaseUser);
-    });
+  Future<void> getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      setState(() {
+        myUser = user;
+        _emailUser = user.email;
+        _isuser = true;
+      });
+    }
   }
 
   @override
@@ -249,9 +250,8 @@ class _MasukState extends State<Masuk> {
                             if (_formKey.currentState!.validate()) {
                               if (pagesName == 'Masuk') {
                                 try {
-                                  UserCredential userCredential =
-                                      await FirebaseAuth
-                                          .instance
+                                  final UserCredential userCredential =
+                                      await FirebaseAuth.instance
                                           .signInWithEmailAndPassword(
                                               email: emailController.text,
                                               password:
@@ -279,12 +279,13 @@ class _MasukState extends State<Masuk> {
                                             content: Text(
                                                 'Wrong password provided for that user.')));
                                   }
+                                } catch (e) {
+                                  print(e);
                                 }
                               } else {
                                 try {
-                                  UserCredential userCredential =
-                                      await FirebaseAuth
-                                          .instance
+                                  final UserCredential userCredential =
+                                      await FirebaseAuth.instance
                                           .createUserWithEmailAndPassword(
                                               email: emailController.text,
                                               password:
