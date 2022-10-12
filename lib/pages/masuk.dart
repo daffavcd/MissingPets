@@ -9,7 +9,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:kucingku_hilang/pages/daftar.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 class Masuk extends StatefulWidget {
   const Masuk(this.onItemTapped, {super.key});
@@ -53,13 +52,10 @@ class _MasukState extends State<Masuk> {
     });
   }
 
-  final storageRef = FirebaseStorage.instance.ref();
-
   @override
   void initState() {
     super.initState();
     getCurrentUser();
-    getImage();
   }
 
   Future<void> getCurrentUser() async {
@@ -71,14 +67,6 @@ class _MasukState extends State<Masuk> {
         _isuser = true;
       });
     }
-  }
-
-  Future<void> getImage() async {
-    final pathReference = await storageRef
-        .child("petImages/2022491212i10_02. ALIH JENJANG 2022.jpg")
-        .getDownloadURL();
-
-    print(pathReference);
   }
 
   @override

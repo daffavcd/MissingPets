@@ -85,6 +85,24 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  Future<void> getCurrentUser() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.onItemTapped(3, false, false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Silahkan login terlebih dahulu.')),
+        );
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
