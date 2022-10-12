@@ -62,7 +62,8 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
       'jenisHewan': dropdownValue,
       'gambar': imageFix,
       'keterangan': keteranganController.text,
-      'userEmail': email
+      'userEmail': email,
+      'status': 'Belum Ditemukan',
     }).then((value) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Hewan berhasil didaftarkan.')),

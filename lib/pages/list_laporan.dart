@@ -116,6 +116,23 @@ class _ListLaporanState extends State<ListLaporan> {
                   return const Text("Loading");
                 }
 
+                if (snapshot.data!.docs.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 35),
+                    child: Text(
+                      "Currently no data is available.",
+                      style: GoogleFonts.poppins(
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 17,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+
                 return ListView(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
