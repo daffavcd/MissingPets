@@ -59,6 +59,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
       'waktuHilang':
           '${tanggalHilangController.text} at ${waktuHilangController.text}',
       'lokasiTerakhir': lokasiTerakhirController.text,
+      'jenisHewan': dropdownValue,
       'gambar': imageFix,
       'keterangan': keteranganController.text,
       'userEmail': email

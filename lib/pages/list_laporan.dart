@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:kucingku_hilang/pages/detail_laporan.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 class ListLaporan extends StatefulWidget {
   const ListLaporan(this.onItemTapped, {super.key});
   final void Function(int index, bool choose, bool choose2) onItemTapped;
@@ -14,8 +18,18 @@ class ListLaporan extends StatefulWidget {
 
 class _ListLaporanState extends State<ListLaporan> {
   final _formKey = GlobalKey<FormState>();
-
   final cariController = TextEditingController();
+
+  final Stream<QuerySnapshot> _petsStream =
+      FirebaseFirestore.instance.collection('lostPets').snapshots();
+  final storageRef = FirebaseStorage.instance.ref();
+
+  Future<String> _getImage(String imageName) async {
+    final pathReference =
+        await storageRef.child("petImages/$imageName").getDownloadURL();
+
+    return pathReference;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,110 +104,143 @@ class _ListLaporanState extends State<ListLaporan> {
             ),
           ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    widget.onItemTapped(0, true, false);
-                  },
-                  child: Card(
-                    margin: EdgeInsets.only(bottom: 25),
-                    elevation: 8,
-                    shadowColor: Color.fromRGBO(246, 157, 123, 1.0),
-                    child: Column(
-                      children: <Widget>[
-                        Container(
-                          height: 280,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(3),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              image: NetworkImage(
-                                "https://cdn.britannica.com/39/7139-050-A88818BB/Himalayan-chocolate-point.jpg",
-                              ),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: _petsStream,
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Something went wrong');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Text("Loading");
+                }
+
+                return ListView(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
+                  children:
+                      snapshot.data!.docs.map((DocumentSnapshot document) {
+                    Map<String, dynamic> data =
+                        document.data()! as Map<String, dynamic>;
+
+                    return GestureDetector(
+                      onTap: () {
+                        widget.onItemTapped(0, true, false);
+                      },
+                      child: Card(
+                        margin: const EdgeInsets.only(bottom: 25),
+                        elevation: 8,
+                        shadowColor: const Color.fromRGBO(246, 157, 123, 1.0),
+                        child: Column(
+                          children: <Widget>[
+                            FutureBuilder(
+                              future: _getImage(data['gambar']),
+                              builder: (BuildContext context,
+                                  AsyncSnapshot<String> snapshot) {
+                                if (snapshot.connectionState ==
+                                        ConnectionState.done &&
+                                    snapshot.hasData) {
+                                  return Container(
+                                    height: 280,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(3),
+                                      image: DecorationImage(
+                                        image: NetworkImage(snapshot.data!),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                if (snapshot.connectionState ==
+                                        ConnectionState.waiting ||
+                                    !snapshot.hasData) {
+                                  return const CircularProgressIndicator();
+                                }
+                                return Container();
+                              },
                             ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 11),
-                          child: Column(
-                            children: <Widget>[
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Container(
-                                  child: Text(
-                                    'Sultan Pangkumlorot 1',
-                                    style: GoogleFonts.poppins(
-                                      textStyle: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 11),
+                              child: Column(
+                                children: <Widget>[
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      child: Text(
+                                        "${data['namaHewan']}",
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      const WidgetSpan(
-                                        child: Icon(
-                                          Icons.calendar_today,
-                                          size: 20,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: " 18 Juni 2023",
-                                        style: GoogleFonts.poppins(
-                                          textStyle: const TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 17,
-                                            color: Colors.black87,
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          const WidgetSpan(
+                                            child: Icon(
+                                              Icons.calendar_today,
+                                              size: 20,
+                                              color: Colors.black87,
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: RichText(
-                                  text: TextSpan(
-                                    children: [
-                                      const WidgetSpan(
-                                        child: Icon(
-                                          Icons.pets,
-                                          size: 20,
-                                          color: Colors.black87,
-                                        ),
-                                      ),
-                                      TextSpan(
-                                        text: " Anjing",
-                                        style: GoogleFonts.poppins(
-                                          textStyle: const TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 17,
-                                            color: Colors.black87,
+                                          TextSpan(
+                                            text: " ${data['waktuHilang']}",
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 17,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          const WidgetSpan(
+                                            child: Icon(
+                                              Icons.pets,
+                                              size: 20,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: " ${data['jenisHewan']}",
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 17,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                );
+              },
             ),
           ),
         ],
