@@ -19,16 +19,16 @@ class DetailLaporan extends StatefulWidget {
 
 class _DetailLaporanState extends State<DetailLaporan> {
   var _isuser = false;
-  var _emailUser;
+  late String _emailUser;
 
   CollectionReference lostPet =
       FirebaseFirestore.instance.collection('lostPets');
 
   final storageRef = FirebaseStorage.instance.ref();
 
-  Future<String> _getImage(String imageName) async {
+  Future<String> _getImage(String imageName, String dirName) async {
     final pathReference =
-        await storageRef.child("petImages/$imageName").getDownloadURL();
+        await storageRef.child("$dirName/$imageName").getDownloadURL();
 
     return pathReference;
   }
@@ -38,7 +38,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
     if (user != null) {
       setState(() {
         _isuser = true;
-        _emailUser = user.email;
+        _emailUser = user.email.toString();
       });
     }
   }
@@ -46,7 +46,6 @@ class _DetailLaporanState extends State<DetailLaporan> {
   @override
   void initState() {
     super.initState();
-
     getCurrentUser();
   }
 
@@ -79,11 +78,11 @@ class _DetailLaporanState extends State<DetailLaporan> {
                   builder: (BuildContext context,
                       AsyncSnapshot<DocumentSnapshot> snapshot) {
                     if (snapshot.hasError) {
-                      return Text("Something went wrong");
+                      return const Text("Something went wrong");
                     }
 
                     if (snapshot.hasData && !snapshot.data!.exists) {
-                      return Text("Document does not exist");
+                      return const Text("Document does not exist");
                     }
 
                     if (snapshot.connectionState == ConnectionState.done) {
@@ -91,13 +90,13 @@ class _DetailLaporanState extends State<DetailLaporan> {
                           snapshot.data!.data() as Map<String, dynamic>;
 
                       return Card(
-                        margin: EdgeInsets.only(bottom: 25),
+                        margin: const EdgeInsets.only(bottom: 25),
                         elevation: 8,
-                        shadowColor: Color.fromRGBO(246, 157, 123, 1.0),
+                        shadowColor: const Color.fromRGBO(246, 157, 123, 1.0),
                         child: Column(
                           children: <Widget>[
                             FutureBuilder(
-                              future: _getImage(data['gambar']),
+                              future: _getImage(data['gambar'], "petImages"),
                               builder: (BuildContext context,
                                   AsyncSnapshot<String> snapshot) {
                                 if (snapshot.connectionState ==
@@ -130,14 +129,12 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                   horizontal: 10, vertical: 5),
                               child: Align(
                                 alignment: Alignment.centerLeft,
-                                child: Container(
-                                  child: Text(
-                                    "${data['namaHewan']}",
-                                    style: GoogleFonts.poppins(
-                                      textStyle: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 18,
-                                      ),
+                                child: Text(
+                                  "${data['namaHewan']}",
+                                  style: GoogleFonts.poppins(
+                                    textStyle: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 18,
                                     ),
                                   ),
                                 ),
@@ -287,43 +284,305 @@ class _DetailLaporanState extends State<DetailLaporan> {
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
+                                  horizontal: 10, vertical: 0),
                               child: Align(
                                 alignment: Alignment.center,
-                                child: Container(
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: "~ List Laporan Penemuan ~",
-                                          style: GoogleFonts.poppins(
-                                            textStyle: const TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 18,
-                                              color: Colors.black87,
-                                            ),
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                        text: "~ List Laporan Penemuan ~",
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 18,
+                                            color: Colors.black87,
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ),
                             // IF ELSE IS THERE IS PENEMUAN?
+                            // LIST PELAPORAN PENEMUAN!!!
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 0),
-                              child: Container(
-                                child: Text(
-                                  'Sejauh ini belum ada penemuan.',
-                                  style: GoogleFonts.poppins(
-                                    textStyle: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                ),
+                              child: StreamBuilder<QuerySnapshot>(
+                                stream: FirebaseFirestore.instance
+                                    .collection('lostPets')
+                                    .doc(widget.docId)
+                                    .collection('petDiscoveries')
+                                    .snapshots(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (snapshot.hasError) {
+                                    return const Text('Something went wrong');
+                                  }
+
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const Text("Loading");
+                                  }
+
+                                  if (snapshot.data!.docs.isEmpty) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 10),
+                                      child: Text(
+                                        'Sejauh ini belum ada penemuan.',
+                                        style: GoogleFonts.poppins(
+                                          textStyle: const TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  return ListView(
+                                    scrollDirection: Axis.vertical,
+                                    shrinkWrap: true,
+                                    children: snapshot.data!.docs
+                                        .map((DocumentSnapshot document) {
+                                      Map<String, dynamic> discoveryPet =
+                                          document.data()!
+                                              as Map<String, dynamic>;
+
+                                      return Card(
+                                        margin: const EdgeInsets.only(
+                                            top: 0, bottom: 25),
+                                        elevation: 3,
+                                        shadowColor: const Color.fromRGBO(
+                                            246, 157, 123, 1.0),
+                                        child: Column(
+                                          children: <Widget>[
+                                            Row(
+                                              children: <Widget>[
+                                                FutureBuilder(
+                                                  future: _getImage(
+                                                      discoveryPet['gambar'],
+                                                      "petDiscoveryImages"),
+                                                  builder:
+                                                      (BuildContext context,
+                                                          AsyncSnapshot<String>
+                                                              snapshot) {
+                                                    if (snapshot.connectionState ==
+                                                            ConnectionState
+                                                                .done &&
+                                                        snapshot.hasData) {
+                                                      return ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(3.0),
+                                                        child: Image.network(
+                                                          snapshot.data!,
+                                                          fit: BoxFit.cover,
+                                                          height: 120,
+                                                          width: 120,
+                                                        ),
+                                                      );
+                                                    }
+                                                    if (snapshot.connectionState ==
+                                                            ConnectionState
+                                                                .waiting ||
+                                                        !snapshot.hasData) {
+                                                      return const CircularProgressIndicator();
+                                                    }
+                                                    return Container();
+                                                  },
+                                                ),
+                                                Expanded(
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 0,
+                                                        ),
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                const WidgetSpan(
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .email_sharp,
+                                                                    size: 16,
+                                                                    color: Colors
+                                                                        .black87,
+                                                                  ),
+                                                                ),
+                                                                TextSpan(
+                                                                  text:
+                                                                      " ${discoveryPet['userEmail']}",
+                                                                  style: GoogleFonts
+                                                                      .poppins(
+                                                                    textStyle:
+                                                                        const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .black87,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 0,
+                                                        ),
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                const WidgetSpan(
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .pin_drop_rounded,
+                                                                    size: 16,
+                                                                    color: Colors
+                                                                        .black87,
+                                                                  ),
+                                                                ),
+                                                                TextSpan(
+                                                                  text:
+                                                                      " ${discoveryPet['lokasiTerakhir']}",
+                                                                  style: GoogleFonts
+                                                                      .poppins(
+                                                                    textStyle:
+                                                                        const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .black87,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 0,
+                                                        ),
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                const WidgetSpan(
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .edit_calendar_rounded,
+                                                                    size: 16,
+                                                                    color: Colors
+                                                                        .black87,
+                                                                  ),
+                                                                ),
+                                                                TextSpan(
+                                                                  text:
+                                                                      " ${discoveryPet['waktuDilihat']}",
+                                                                  style: GoogleFonts
+                                                                      .poppins(
+                                                                    textStyle:
+                                                                        const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .black87,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 0,
+                                                        ),
+                                                        child: Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: RichText(
+                                                            text: TextSpan(
+                                                              children: [
+                                                                const WidgetSpan(
+                                                                  child: Icon(
+                                                                    Icons.edit,
+                                                                    size: 16,
+                                                                    color: Colors
+                                                                        .black87,
+                                                                  ),
+                                                                ),
+                                                                TextSpan(
+                                                                  text:
+                                                                      " ${discoveryPet['keterangan']}",
+                                                                  style: GoogleFonts
+                                                                      .poppins(
+                                                                    textStyle:
+                                                                        const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w400,
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .black87,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }).toList(),
+                                  );
+                                },
                               ),
                             ),
                             // IF ELSE IS USER = ID USER

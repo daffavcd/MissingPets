@@ -36,17 +36,30 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
   CollectionReference lostPets =
       FirebaseFirestore.instance.collection('lostPets');
 
-  Future<void> addLostPet() {
+  Future<void> addLostPet() async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('ymdhs').format(now);
     final imageFix = '${formattedDate}_${gambarController.text}';
 
+    final user = FirebaseAuth.instance.currentUser;
+    var email = 'Tidak Terauthentikasi';
+    if (user != null) {
+      email = user.email.toString();
+    }
+
     // UPLOAD TO CLOUD STORAGE
-    uploadToStorage(imageFix);
+    try {
+      await FirebaseStorage.instance
+          .ref('petDiscoveryImages/$imageFix')
+          .putFile(file);
+    } on FirebaseException catch (e) {
+      log(e.toString());
+    }
     // ----
 
     // Call the user's CollectionReference to add a new user
     return lostPets.doc(widget.docId).collection('petDiscoveries').add({
+      'userEmail': email,
       'lokasiTerakhir': lokasiTerakhirController.text,
       'waktuDilihat':
           '${tanggalDilihatController.text} at ${waktuDilihatController.text}',
@@ -62,17 +75,6 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
         SnackBar(content: Text('$error')),
       );
     });
-  }
-
-  void uploadToStorage(String imageFix) async {
-    // Upload file
-    try {
-      await FirebaseStorage.instance
-          .ref('petDiscoveryImages/$imageFix')
-          .putFile(file);
-    } on FirebaseException catch (e) {
-      log(e.toString());
-    }
   }
 
   @override
@@ -166,7 +168,7 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
                         log(pickedDate
                             .toString()); //pickedDate output format => 2021-03-10 00:00:00.000
                         String formattedDate =
-                            DateFormat('yyyy-MM-dd').format(pickedDate);
+                            DateFormat.yMMMMd('en_US').format(pickedDate);
                         log(formattedDate); //formatted date output using intl package =>  2021-03-16
                         //you can implement different kind of Date Format here according to your requirement
 
