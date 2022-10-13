@@ -19,7 +19,7 @@ class DetailLaporan extends StatefulWidget {
 
 class _DetailLaporanState extends State<DetailLaporan> {
   var _isuser = false;
-  late String _emailUser;
+  String _emailUser = "Unauthenticated";
 
   CollectionReference lostPet =
       FirebaseFirestore.instance.collection('lostPets');
@@ -343,6 +343,8 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                     );
                                   }
                                   return ListView(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     scrollDirection: Axis.vertical,
                                     shrinkWrap: true,
                                     children: snapshot.data!.docs
@@ -380,8 +382,8 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                                         child: Image.network(
                                                           snapshot.data!,
                                                           fit: BoxFit.cover,
-                                                          height: 120,
-                                                          width: 120,
+                                                          height: 130,
+                                                          width: 130,
                                                         ),
                                                       );
                                                     }

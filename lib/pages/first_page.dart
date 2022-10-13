@@ -52,7 +52,7 @@ class _FirstPageState extends State<FirstPage> {
     } else if (_selectedIndex == 0 && _isChild && _isChildChild) {
       return LaporkanPenemuan(onItemTapped, docId, pet);
     } else if (_selectedIndex == 1 && !_isChild && !_isChildChild) {
-      return HistoryLaporan(onItemTapped);
+      return HistoryLaporan(onItemTapped, setDetailId);
     } else if (_selectedIndex == 1 && _isChild && !_isChildChild) {
       return DetailLaporan(onItemTapped, docId, setPet);
     } else if (_selectedIndex == 2 && !_isChild && !_isChildChild) {
