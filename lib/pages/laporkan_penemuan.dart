@@ -7,8 +7,17 @@ import 'package:file_picker/file_picker.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 class LaporkanPenemuan extends StatefulWidget {
-  const LaporkanPenemuan({super.key});
+  const LaporkanPenemuan(this.onItemTapped, this.docId, this.pet, {super.key});
+  final void Function(int index, bool choose, bool choose2) onItemTapped;
+
+  final String docId;
+
+  final Map<String, dynamic> pet;
 
   @override
   State<LaporkanPenemuan> createState() => _LaporkanPenemuanState();
@@ -17,11 +26,59 @@ class LaporkanPenemuan extends StatefulWidget {
 class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
   final _formKey = GlobalKey<FormState>();
 
+  late File file;
   final lokasiTerakhirController = TextEditingController();
   final tanggalDilihatController = TextEditingController();
   final waktuDilihatController = TextEditingController();
   final gambarController = TextEditingController();
   final keteranganController = TextEditingController();
+
+  CollectionReference lostPets =
+      FirebaseFirestore.instance.collection('lostPets');
+
+  Future<void> addLostPet() {
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('ymdhs').format(now);
+    final imageFix = '${formattedDate}_${gambarController.text}';
+
+    // UPLOAD TO CLOUD STORAGE
+    uploadToStorage(imageFix);
+    // ----
+
+    // Call the user's CollectionReference to add a new user
+    return lostPets.doc(widget.docId).collection('petDiscoveries').add({
+      'lokasiTerakhir': lokasiTerakhirController.text,
+      'waktuDilihat':
+          '${tanggalDilihatController.text} at ${waktuDilihatController.text}',
+      'gambar': imageFix,
+      'keterangan': keteranganController.text,
+    }).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Penemuan Hewan berhasil didaftarkan.')),
+      );
+      widget.onItemTapped(0, true, false);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$error')),
+      );
+    });
+  }
+
+  void uploadToStorage(String imageFix) async {
+    // Upload file
+    try {
+      await FirebaseStorage.instance
+          .ref('petDiscoveryImages/$imageFix')
+          .putFile(file);
+    } on FirebaseException catch (e) {
+      log(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +95,13 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
             style: GoogleFonts.poppins(
               textStyle:
                   const TextStyle(fontWeight: FontWeight.bold, fontSize: 30),
+            ),
+          ),
+          Text(
+            "${widget.pet['namaHewan']}",
+            style: GoogleFonts.poppins(
+              textStyle:
+                  const TextStyle(fontWeight: FontWeight.w500, fontSize: 22),
             ),
           ),
           const SizedBox(
@@ -182,12 +246,10 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
                           .pickFiles(type: FileType.image);
 
                       if (result != null) {
-                        PlatformFile file = result.files.first;
+                        file = File(result.files.single.path.toString());
                         setState(() {
-                          gambarController.text = file.name;
+                          gambarController.text = result.files.single.name;
                         });
-
-                        // File file = File(result.files.single.path);
                       } else {
                         // User canceled the picker
                       }
@@ -222,8 +284,7 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // If the form is valid, display a snackbar. In the real world,
-                        // you'd often call a server or save the information in a database.
+                        addLostPet();
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Processing Data')),
                         );

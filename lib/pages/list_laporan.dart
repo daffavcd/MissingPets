@@ -9,8 +9,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class ListLaporan extends StatefulWidget {
-  const ListLaporan(this.onItemTapped, {super.key});
+  const ListLaporan(this.onItemTapped, this.setDetailId, {super.key});
   final void Function(int index, bool choose, bool choose2) onItemTapped;
+  final void Function(String docId) setDetailId;
 
   @override
   State<ListLaporan> createState() => _ListLaporanState();
@@ -132,7 +133,6 @@ class _ListLaporanState extends State<ListLaporan> {
                     ),
                   );
                 }
-
                 return ListView(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 11),
@@ -143,6 +143,7 @@ class _ListLaporanState extends State<ListLaporan> {
 
                     return GestureDetector(
                       onTap: () {
+                        widget.setDetailId(document.id);
                         widget.onItemTapped(0, true, false);
                       },
                       child: Card(

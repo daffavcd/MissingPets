@@ -18,6 +18,8 @@ class FirstPage extends StatefulWidget {
 }
 
 class _FirstPageState extends State<FirstPage> {
+  late String docId;
+  late Map<String, dynamic> pet;
   int _selectedIndex = 0;
   bool _isChild = false;
   bool _isChildChild = false;
@@ -30,17 +32,29 @@ class _FirstPageState extends State<FirstPage> {
     });
   }
 
+  void setDetailId(String docIdParam) {
+    setState(() {
+      docId = docIdParam;
+    });
+  }
+
+  void setPet(Map<String, dynamic> petParam) {
+    setState(() {
+      pet = petParam;
+    });
+  }
+
   Widget childBody() {
     if (_selectedIndex == 0 && !_isChild && !_isChildChild) {
-      return ListLaporan(onItemTapped);
+      return ListLaporan(onItemTapped, setDetailId);
     } else if (_selectedIndex == 0 && _isChild && !_isChildChild) {
-      return DetailLaporan(onItemTapped);
+      return DetailLaporan(onItemTapped, docId, setPet);
     } else if (_selectedIndex == 0 && _isChild && _isChildChild) {
-      return const LaporkanPenemuan();
+      return LaporkanPenemuan(onItemTapped, docId, pet);
     } else if (_selectedIndex == 1 && !_isChild && !_isChildChild) {
       return HistoryLaporan(onItemTapped);
     } else if (_selectedIndex == 1 && _isChild && !_isChildChild) {
-      return DetailLaporan(onItemTapped);
+      return DetailLaporan(onItemTapped, docId, setPet);
     } else if (_selectedIndex == 2 && !_isChild && !_isChildChild) {
       return LaporkanKehilangan(onItemTapped);
     } else if (_selectedIndex == 3 && !_isChild && !_isChildChild) {

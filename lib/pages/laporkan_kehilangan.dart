@@ -39,13 +39,17 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
 
   final storageRef = FirebaseStorage.instance.ref();
 
-  Future<void> addLostPet() {
+  Future<void> addLostPet() async {
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('ymdhs').format(now);
     final imageFix = '${formattedDate}_${gambarController.text}';
 
     // UPLOAD TO CLOUD STORAGE
-    uploadToStorage(imageFix);
+    try {
+      await FirebaseStorage.instance.ref('petImages/$imageFix').putFile(file);
+    } on FirebaseException catch (e) {
+      log(e.toString());
+    }
     // ----
     final user = FirebaseAuth.instance.currentUser;
     var email = 'Tidak Terauthentikasi';
@@ -76,14 +80,14 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
     });
   }
 
-  void uploadToStorage(String imageFix) async {
-    // Upload file
-    try {
-      await FirebaseStorage.instance.ref('petImages/$imageFix').putFile(file);
-    } on FirebaseException catch (e) {
-      log(e.toString());
-    }
-  }
+  // void uploadToStorage(String imageFix) async {
+  //   // Upload file
+  //   try {
+  //     await FirebaseStorage.instance.ref('petImages/$imageFix').putFile(file);
+  //   } on FirebaseException catch (e) {
+  //     log(e.toString());
+  //   }
+  // }
 
   @override
   void initState() {
