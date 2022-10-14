@@ -43,6 +43,24 @@ class _DetailLaporanState extends State<DetailLaporan> {
     }
   }
 
+  CollectionReference lostPets =
+      FirebaseFirestore.instance.collection('lostPets');
+
+  Future<void> updateLostPet() async {
+    return lostPets.doc(widget.docId).update({
+      'status': 'Sudah Ditemukan',
+    }).then((value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Status berhasil dirubah.')),
+      );
+      widget.onItemTapped(1, true, false);
+    }).catchError((error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$error')),
+      );
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -591,7 +609,8 @@ class _DetailLaporanState extends State<DetailLaporan> {
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 10, vertical: 30.0),
-                              child: _emailUser == data['userEmail']
+                              child: _emailUser == data['userEmail'] &&
+                                      data['status'] == 'Belum Ditemukan'
                                   ? ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: const Color.fromRGBO(
@@ -641,15 +660,7 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                             ),
                                             TextButton(
                                               onPressed: () {
-                                                widget.onItemTapped(
-                                                    1, false, false);
-                                                ScaffoldMessenger.of(context)
-                                                    .showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text(
-                                                        'Status berhasil dirubah.'),
-                                                  ),
-                                                );
+                                                updateLostPet();
                                                 Navigator.pop(context, 'OK');
                                               },
                                               child: Text(
@@ -671,30 +682,35 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                       child: const Text(
                                           'Hewanku Telah Ditemukan!'),
                                     )
-                                  : ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: const Color.fromRGBO(
-                                            246, 157, 123, 1.0),
-                                        minimumSize:
-                                            const Size.fromHeight(50), // NEW
-                                      ),
-                                      onPressed: () {
-                                        if (!_isuser) {
-                                          widget.onItemTapped(3, false, false);
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            const SnackBar(
-                                                content: Text(
-                                                    'Silahkan login terlebih dahulu.')),
-                                          );
-                                        } else {
-                                          widget.setPet(data);
-                                          widget.onItemTapped(0, true, true);
-                                        }
-                                      },
-                                      child:
-                                          const Text('Buat Laporan Penemuan!'),
-                                    ),
+                                  : _emailUser != data['userEmail']
+                                      ? ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                const Color.fromRGBO(
+                                                    246, 157, 123, 1.0),
+                                            minimumSize: const Size.fromHeight(
+                                                50), // NEW
+                                          ),
+                                          onPressed: () {
+                                            if (!_isuser) {
+                                              widget.onItemTapped(
+                                                  3, false, false);
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                const SnackBar(
+                                                    content: Text(
+                                                        'Silahkan login terlebih dahulu.')),
+                                              );
+                                            } else {
+                                              widget.setPet(data);
+                                              widget.onItemTapped(
+                                                  0, true, true);
+                                            }
+                                          },
+                                          child: const Text(
+                                              'Buat Laporan Penemuan!'),
+                                        )
+                                      : const Text(''),
                             ),
                             // IF ELSE IS USER = ID USER
                           ],
