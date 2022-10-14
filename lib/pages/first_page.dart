@@ -9,6 +9,8 @@ import 'package:kucingku_hilang/pages/laporkan_penemuan.dart';
 import 'package:kucingku_hilang/pages/list_laporan.dart';
 import 'package:kucingku_hilang/pages/masuk.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:loader_overlay/loader_overlay.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class FirstPage extends StatefulWidget {
   const FirstPage({super.key});
@@ -68,48 +70,61 @@ class _FirstPageState extends State<FirstPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      body: Center(
-        child: childBody(),
+    return LoaderOverlay(
+      overlayColor: const Color.fromARGB(255, 253, 178, 148),
+      useDefaultLoading: false,
+      overlayOpacity: 0.4,
+      overlayWidget: const Center(
+        child: SpinKitWanderingCubes(
+          color: Color.fromARGB(255, 255, 102, 41),
+          size: 50.0,
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'List',
-            backgroundColor: Color.fromRGBO(250, 153, 121, 1.0),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: 'History',
-            backgroundColor: Color.fromRGBO(250, 153, 121, 1.0),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.edit_note_outlined),
-            label: 'Lapor',
-            backgroundColor: Color.fromRGBO(250, 153, 121, 1.0),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-            backgroundColor: Color.fromRGBO(250, 153, 121, 1.0),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedLabelStyle: GoogleFonts.poppins(
-          textStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        resizeToAvoidBottomInset: false,
+        body: Center(
+          child: childBody(),
         ),
-        unselectedLabelStyle: GoogleFonts.poppins(
-          textStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.list),
+              label: 'List',
+              backgroundColor: Color.fromRGBO(250, 153, 121, 1.0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.history),
+              label: 'History',
+              backgroundColor: Color.fromRGBO(250, 153, 121, 1.0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.edit_note_outlined),
+              label: 'Lapor',
+              backgroundColor: Color.fromRGBO(250, 153, 121, 1.0),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Profile',
+              backgroundColor: Color.fromRGBO(250, 153, 121, 1.0),
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedLabelStyle: GoogleFonts.poppins(
+            textStyle:
+                const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+          ),
+          unselectedLabelStyle: GoogleFonts.poppins(
+            textStyle:
+                const TextStyle(fontWeight: FontWeight.w500, fontSize: 18),
+          ),
+          iconSize: 26,
+          unselectedItemColor: const Color.fromRGBO(248, 217, 201, 1.0),
+          selectedItemColor: const Color.fromRGBO(252, 252, 250, 1.0),
+          onTap: (int index) {
+            onItemTapped(index, false, false);
+          },
         ),
-        iconSize: 26,
-        unselectedItemColor: const Color.fromRGBO(248, 217, 201, 1.0),
-        selectedItemColor: const Color.fromRGBO(252, 252, 250, 1.0),
-        onTap: (int index) {
-          onItemTapped(index, false, false);
-        },
       ),
     );
   }

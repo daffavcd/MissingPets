@@ -10,6 +10,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class LaporkanPenemuan extends StatefulWidget {
   const LaporkanPenemuan(this.onItemTapped, this.docId, this.pet, {super.key});
@@ -37,6 +38,7 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
       FirebaseFirestore.instance.collection('lostPets');
 
   Future<void> addLostPet() async {
+    context.loaderOverlay.show();
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('ymdhs').format(now);
     final imageFix = '${formattedDate}_${gambarController.text}';
@@ -66,6 +68,7 @@ class _LaporkanPenemuanState extends State<LaporkanPenemuan> {
       'gambar': imageFix,
       'keterangan': keteranganController.text,
     }).then((value) {
+      context.loaderOverlay.hide();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Penemuan Hewan berhasil didaftarkan.')),
       );

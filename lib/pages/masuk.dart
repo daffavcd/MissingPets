@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:kucingku_hilang/pages/daftar.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class Masuk extends StatefulWidget {
   const Masuk(this.onItemTapped, {super.key});
@@ -135,7 +136,9 @@ class _MasukState extends State<Masuk> {
                           minimumSize: const Size.fromHeight(50), // NEW
                         ),
                         onPressed: () async {
+                          context.loaderOverlay.show();
                           await FirebaseAuth.instance.signOut();
+                          context.loaderOverlay.hide();
                           if (!mounted) return;
 
                           setState(() {
@@ -250,6 +253,7 @@ class _MasukState extends State<Masuk> {
                             if (_formKey.currentState!.validate()) {
                               if (pagesName == 'Masuk') {
                                 try {
+                                  context.loaderOverlay.show();
                                   final UserCredential userCredential =
                                       await FirebaseAuth.instance
                                           .signInWithEmailAndPassword(
@@ -257,16 +261,20 @@ class _MasukState extends State<Masuk> {
                                               password:
                                                   passwordController.text);
 
-                                  log(userCredential.user.toString());
                                   setState(() {
                                     myUser = userCredential.user;
                                     _emailUser = emailController.text;
                                     _isuser = true;
                                   });
+
+                                  if (!mounted) return;
+
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
                                         content: Text('Login Success')),
                                   );
+
+                                  context.loaderOverlay.hide();
                                 } on FirebaseAuthException catch (e) {
                                   if (e.code == 'user-not-found') {
                                     ScaffoldMessenger.of(context).showSnackBar(

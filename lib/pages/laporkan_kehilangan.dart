@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:typed_data';
+import 'package:loader_overlay/loader_overlay.dart';
 
 const List<String> list = <String>['Kucing', 'Anjing', 'Burung', 'Lainnya'];
 
@@ -40,6 +41,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
   final storageRef = FirebaseStorage.instance.ref();
 
   Future<void> addLostPet() async {
+    context.loaderOverlay.show();
     DateTime now = DateTime.now();
     String formattedDate = DateFormat('ymdhs').format(now);
     final imageFix = '${formattedDate}_${gambarController.text}';
@@ -69,6 +71,7 @@ class _LaporkanKehilanganState extends State<LaporkanKehilangan> {
       'userEmail': email,
       'status': 'Belum Ditemukan',
     }).then((value) {
+      context.loaderOverlay.hide();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Hewan berhasil didaftarkan.')),
       );

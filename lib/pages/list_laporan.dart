@@ -114,7 +114,9 @@ class _ListLaporanState extends State<ListLaporan> {
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text("Loading");
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
                 }
 
                 if (snapshot.data!.docs.isEmpty) {
@@ -173,7 +175,19 @@ class _ListLaporanState extends State<ListLaporan> {
                                 if (snapshot.connectionState ==
                                         ConnectionState.waiting ||
                                     !snapshot.hasData) {
-                                  return const CircularProgressIndicator();
+                                  return Container(
+                                    height: 280,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(3),
+                                        topRight: Radius.circular(3),
+                                      ),
+                                      color: Color.fromARGB(255, 240, 240, 240),
+                                    ),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
                                 }
                                 return Container();
                               },

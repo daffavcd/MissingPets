@@ -4,6 +4,7 @@ import 'package:kucingku_hilang/pages/laporkan_penemuan.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 class DetailLaporan extends StatefulWidget {
   const DetailLaporan(this.onItemTapped, this.docId, this.setPet, {super.key});
@@ -47,9 +48,11 @@ class _DetailLaporanState extends State<DetailLaporan> {
       FirebaseFirestore.instance.collection('lostPets');
 
   Future<void> updateLostPet() async {
+    context.loaderOverlay.show();
     return lostPets.doc(widget.docId).update({
       'status': 'Sudah Ditemukan',
     }).then((value) {
+      context.loaderOverlay.hide();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Status berhasil dirubah.')),
       );
@@ -136,7 +139,19 @@ class _DetailLaporanState extends State<DetailLaporan> {
                                 if (snapshot.connectionState ==
                                         ConnectionState.waiting ||
                                     !snapshot.hasData) {
-                                  return const CircularProgressIndicator();
+                                  return Container(
+                                    height: 280,
+                                    decoration: const BoxDecoration(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(3),
+                                        topRight: Radius.circular(3),
+                                      ),
+                                      color: Color.fromARGB(255, 240, 240, 240),
+                                    ),
+                                    child: const Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  );
                                 }
                                 return Container();
                               },
@@ -342,7 +357,9 @@ class _DetailLaporanState extends State<DetailLaporan> {
 
                                   if (snapshot.connectionState ==
                                       ConnectionState.waiting) {
-                                    return const Text("Loading");
+                                    return const Center(
+                                      child: CircularProgressIndicator(),
+                                    );
                                   }
 
                                   if (snapshot.data!.docs.isEmpty) {
@@ -718,7 +735,9 @@ class _DetailLaporanState extends State<DetailLaporan> {
                       );
                     }
 
-                    return Text("loading");
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
                   },
                 ),
               ],
