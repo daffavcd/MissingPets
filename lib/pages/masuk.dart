@@ -251,9 +251,9 @@ class _MasukState extends State<Masuk> {
                           ),
                           onPressed: () async {
                             if (_formKey.currentState!.validate()) {
+                              context.loaderOverlay.show();
                               if (pagesName == 'Masuk') {
                                 try {
-                                  context.loaderOverlay.show();
                                   final UserCredential userCredential =
                                       await FirebaseAuth.instance
                                           .signInWithEmailAndPassword(
@@ -273,8 +273,6 @@ class _MasukState extends State<Masuk> {
                                     const SnackBar(
                                         content: Text('Login Success')),
                                   );
-
-                                  context.loaderOverlay.hide();
                                 } on FirebaseAuthException catch (e) {
                                   if (e.code == 'user-not-found') {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -292,7 +290,6 @@ class _MasukState extends State<Masuk> {
                                 }
                               } else {
                                 try {
-                                  context.loaderOverlay.show();
                                   final UserCredential userCredential =
                                       await FirebaseAuth.instance
                                           .createUserWithEmailAndPassword(
@@ -300,7 +297,6 @@ class _MasukState extends State<Masuk> {
                                               password:
                                                   passwordController.text);
 
-                                  context.loaderOverlay.hide();
                                   log(userCredential.toString());
 
                                   setState(() {
@@ -329,6 +325,7 @@ class _MasukState extends State<Masuk> {
                                   print(e);
                                 }
                               }
+                              context.loaderOverlay.hide();
                             }
                           },
                           child: const Text('Submit'),
