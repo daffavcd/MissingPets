@@ -292,6 +292,7 @@ class _MasukState extends State<Masuk> {
                                 }
                               } else {
                                 try {
+                                  context.loaderOverlay.show();
                                   final UserCredential userCredential =
                                       await FirebaseAuth.instance
                                           .createUserWithEmailAndPassword(
@@ -299,6 +300,7 @@ class _MasukState extends State<Masuk> {
                                               password:
                                                   passwordController.text);
 
+                                  context.loaderOverlay.hide();
                                   log(userCredential.toString());
 
                                   setState(() {
