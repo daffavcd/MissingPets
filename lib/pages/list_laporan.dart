@@ -21,7 +21,7 @@ class _ListLaporanState extends State<ListLaporan> {
   final _formKey = GlobalKey<FormState>();
   final cariController = TextEditingController();
 
-  final Stream<QuerySnapshot> _petsStream =
+  Stream<QuerySnapshot> _petsStream =
       FirebaseFirestore.instance.collection('lostPets').snapshots();
   final storageRef = FirebaseStorage.instance.ref();
 
@@ -30,6 +30,20 @@ class _ListLaporanState extends State<ListLaporan> {
         await storageRef.child("petImages/$imageName").getDownloadURL();
 
     return pathReference;
+  }
+
+  Future<void> findQueryPet(String query) async {
+    // _petsStream = FirebaseFirestore.instance
+    //     .collection('lostPets')
+    //     .where('namaHewan', isGreaterThanOrEqualTo: query)
+    //     .where('namaHewan', isLessThan: '${query}z')
+    //     .snapshots();
+    setState(() {
+      _petsStream = FirebaseFirestore.instance
+          .collection('lostPets')
+          .orderBy('namaHewan')
+          .startAt([query]).endAt(['$query\uf8ff']).snapshots();
+    });
   }
 
   @override
@@ -63,6 +77,9 @@ class _ListLaporanState extends State<ListLaporan> {
                     fontSize: 14,
                   ),
                 ),
+                onChanged: (value) {
+                  findQueryPet(value);
+                },
                 enableSuggestions: false,
                 autocorrect: false,
                 controller: cariController,
