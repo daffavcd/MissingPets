@@ -280,6 +280,32 @@ class _ListLaporanState extends State<ListLaporan> {
                                       ),
                                     ),
                                   ),
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          const WidgetSpan(
+                                            child: Icon(
+                                              Icons.info_outline,
+                                              size: 20,
+                                              color: Colors.black87,
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: " ${data['status']}",
+                                            style: GoogleFonts.poppins(
+                                              textStyle: const TextStyle(
+                                                fontWeight: FontWeight.w500,
+                                                fontSize: 17,
+                                                color: Colors.black87,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             )
